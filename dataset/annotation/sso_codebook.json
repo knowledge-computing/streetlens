@@ -1,0 +1,22 @@
+{
+  "Disorder 3": {
+    "question": "Is there graffiti on buildings, signs, walls, fences, sidewalks, poles, or streets (does not include spray painted measurements shown below)?",
+    "answer_options": "1 - Yes 0 - No"
+  },
+  "Decay 1": {
+    "question": "Condition of the visible Street",
+    "answer_options": "1- Good (majority of the street has minimal slight cracks, either no potholes or minimal potholes are fixed/covered) 2 - Fair (some moderate cracks, a mix of open and recently filled potholes and cracks) 3 - Poor (Sizable cracks, potholes, or broken curbs along MOST or ALL of the street; cracks and potholes have not been recently filled in) Under construction Street is present, but cannot evaluate"
+  },
+  "Decay 2": {
+    "question": "Condition of the sidewalk",
+    "answer_options": "1 - Good (NO holes, sizable cracks, or crumbling or uneven pavement) 2 - Fair (Holes, sizable cracks, or crumbling or uneven pavement, outgrown weeds along SOME of the side walk) 3 - Poor (Holes, sizable cracks, or crumbling or uneven pavement, outgrown weeds along most or ALL of the sidewalk) Under construction Cannot Evaluate"
+  },
+  "SS4": {
+    "question": "Crosswalk or signs signaling to watch for pedestrians (i.e., school crossing, blind pedestrians)",
+    "answer_options": "0 - No Visible 1 - Visible"
+  },
+  "SS5": {
+    "question": "Designated bike lanes (sign or painted markers)",
+    "answer_options": "0 - No Visible 1 - Visible"
+  }
+}

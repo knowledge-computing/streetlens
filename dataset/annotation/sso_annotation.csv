@@ -1,0 +1,4 @@
+Street Block ID,Block Face ID:,Census Tract ID:,Fully Matched,Street Block Faces on:,Boundary Streets:,Direction of Target Block Face,Picture Date (mm/year), Decay 1,SS1,SS2,SS3,SS4,SS5,SS6,SS7,Decay 2,Disorder 1,Disorder 2,Disorder 3,Decay 3
+62146,197,1075,1,Minnehaha Ave ,Midtown Greenway / E 26th St ,W,Jul-21,3,1,1,1,1,1,1,1,2,2,0,1,
+"281, 282",2395,202.01,1,N Humboldt Ave,69th Ave N/ 67th Ave N,W,Aug-21,1,1,1,1,1,0,0,1,1,1,0,0,2
+9576,2402,202.01,1,N Humboldt Pl,N Humboldt Ave / N Humboldt Ave,N,Sep-19,3,0,0,1,0,0,0,0,,2,0,0,1
