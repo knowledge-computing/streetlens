@@ -18,21 +18,17 @@ def main():
     data_config = DataProcessor.DataConfig(codebook_path=codebook_path, annotation_path=annotation_path, paper_path=paper_path, street_block_id=street_block_id)
     data_processor = DataProcessor(data_config=data_config)
 
-    # m2 automated prompt tuner
-    data_config.model_name = 'OpenGVLab/InternVL3-2B-hf'
-    automated_prompt_tuner = AutomatedPromptTuner(data_config=data_config)
-    
     # m3 vision langauge model processor
     device = "cuda" if torch.cuda.is_available() else "cpu"
+    data_config.model_name = 'OpenGVLab/InternVL3-2B-hf'
     vlm_processor = VLMProcessor(data_processor.data_config, device=device)
 
+    # m2 automated prompt tuner
+    automated_prompt_tuner = AutomatedPromptTuner(data_config=data_config, vlm_processor=vlm_processor)
+    
     # role prompt
-    abstract_input_prompt = automated_prompt_tuner.construct_role_prompt()
-    messages = automated_prompt_tuner.prepare_messages(abstract_input_prompt)
-    role_prompt = automated_prompt_tuner.run(messages, vlm_processor)
-    # print(role_prompt)
-    # You are an expert in mixed methods research design and qualitative analysis, with a focus on understanding the shared and unique aspects of researcher versus adolescent observations in neighborhood environments. Your expertise includes using convergent mixed methods research to compare and contrast data sources and employing Key-Word-In-Context analysis to explore ethnic-racial label usage in ethnically/racially segregated neighborhoods.
-        
+    automated_prompt_tuner.construct_role_prompt()
+
     # m4 feedback provider
 
 
