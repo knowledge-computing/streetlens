@@ -1,2 +1,3 @@
-# class FeedbackProvider:
-    # def load_model():
+class FeedbackProvider:
+    def __init__(self, data_config):
+        self.data_config = data_config
