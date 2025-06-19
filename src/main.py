@@ -3,6 +3,8 @@ from automated_prompt_tuner import *
 from vision_language_model_processor import *
 from feedback_provider import *
 
+
+
 def main():
     # todo get input for path
     codebook_path = './dataset/annotation/sso_codebook.json'
@@ -11,16 +13,20 @@ def main():
     street_block_id = ['62146', '281', '282', '9576']
     # protocol_path
 
+    # m1 data processor
     config = Config(codebook_path=codebook_path, annotation_path=annotation_path, paper_path=paper_path, street_block_id=street_block_id)
 
-    # data processor
-
-    # automated prompt tuner
+    # m2 automated prompt tuner
     config._set_model_name = 'OpenGVLab/InternVL3-2B-hf'
+    
 
-    # vision langauge model processor
+    # m3 vision langauge model processor
 
-    # feedback provider
+    # m4 feedback provider
+
+
+
+
 
 if __name__ == "__main__":
     main()
