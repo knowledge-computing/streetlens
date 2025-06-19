@@ -1,1 +1,2 @@
-# def load_model():
+# class VLMProcessor:
+#     def load_model():

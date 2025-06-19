@@ -1,1 +1,2 @@
-# def load_model():
+# class FeedbackProvider:
+    # def load_model():

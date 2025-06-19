@@ -1,1 +1,2 @@
-# def load_model():
+# class AutomatedPromptTuner:
+    # def load_model():
