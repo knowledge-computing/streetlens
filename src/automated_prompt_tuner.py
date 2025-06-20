@@ -48,7 +48,7 @@ class AutomatedPromptTuner:
         
         output_dict = {}
         for key, value in codebook_dict.items():
-            print(f"Agent: Processing question and answer pairs of code #{key}... Generating refined codebook prompt...")
+            print(f"Agent: Processing question and answer pairs of code theme {key}... Generating refined codebook prompt...")
             qa_pair = f"{{{value}}}"
             while True:
                 question = f"""

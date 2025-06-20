@@ -28,9 +28,7 @@ class VLMProcessor:
 
     def _load_image_tensor(self, path):
         from PIL import Image
-        import torchvision.transforms as T
         image = Image.open(path).convert("RGB")
-        # return T.ToTensor()(image)
         return image
 
     def run(self, text, image_path=None, image_url=None, max_new_tokens=1000):
@@ -74,14 +72,14 @@ class VLMProcessor:
     def _run_for_score(self, prompt, image_path, valid_scores, max_retries=5):
         import ast
         attempts = 0
-        print(f"Agent: Reasoning with {image_path} now ...")
+        print(f"Agent: Loading and annotating image from {image_path}...")
         while attempts < max_retries:
             try:            
                 decoded_str = self.run(prompt, image_path=image_path, max_new_tokens=1024).strip()
                 decoded_output = self.extract_dict_from_response(decoded_str)
                 decoded_output = ast.literal_eval(decoded_output)
-                print(f"Agent: Scoring as {decoded_output['score']} ")
-                print(f"Agent: Because {decoded_output['reason']}\n")
+                print(f"Agent: My annotation is {decoded_output['score']} ")
+                print(f"Agent: Generating explanation... Because {decoded_output['reason'][0].lower() + decoded_output['reason'][1:]}\n")
                 print('=============')
                 if not isinstance(decoded_output, dict):
                     raise ValueError("Output is not a dictionary.")
@@ -94,6 +92,7 @@ class VLMProcessor:
             except Exception as e:
                 # print(f"Invalid response, retrying ({attempts + 1}/{max_retries}): {e}")
                 attempts += 1
+                
         # print("Maximum number of retries reached. Returning fallback score 99.")
         return 99
 
@@ -140,23 +139,23 @@ class VLMProcessor:
                 image_score_dict = {}
 
                 for target_code in target_codes:
+                    print(f"Agent: Jumping into code theme {target_code}...")
                     valid_scores = class_dict[target_code]
-
                     format_prompt = f"""
-                    lease provide a single numerical value within the range {valid_scores}, along with a clear and concise explanation for your choice.
-                    Your response must be a dictionary in the following format:
-                    {{'score': <integer>, 'reason': <short explanation string>}}\n
-                    Strictly follow the output format. Do not include any extra text or modify the structure.
-                    """.strip()
+                                    Please provide a single numerical value within the range {valid_scores}, along with a clear and concise explanation for your choice.\n\n
+                                    Your response must be a dictionary in the following format:\n
+                                    {{'score': <integer>, 'reason': <short explanation string>}}\n\n
+                                    Strictly follow the output format. Do not include any extra text or modify the structure.
+                                    """
 
                     score_list = []
                     for fname in os.listdir(dir_path):
                         if fname.endswith(".json"):
                             continue
                         img_path = os.path.join(dir_path, fname)
-                        print(f"Agent: Reasoning with {target_code} now ...")
                         full_prompt = f"{role_prompt}\n{codebook[target_code]}\n{format_prompt}"
                         score = self._run_for_score(full_prompt, img_path, valid_scores)
+                        
                         score_list.append(score)
 
                     final_score = self._aggregate_scores(score_list, valid_scores)
@@ -164,6 +163,6 @@ class VLMProcessor:
 
                 results[f"{block_id}/{direction}"] = image_score_dict
 
-        print (f"\nAgent : Generating an output annotation at {agent_annotation_path} ... ")
+        print (f"\nAgent: Merging my annotations and saving output to {agent_annotation_path} ... ")
         self.generate_agent_anno_file(results,annotation_path,agent_annotation_path)
         return results
