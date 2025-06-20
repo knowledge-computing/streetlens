@@ -80,7 +80,6 @@ class VLMProcessor:
                 decoded_output = ast.literal_eval(decoded_output)
                 print(f"Agent: My annotation is {decoded_output['score']} ")
                 print(f"Agent: Generating explanation... Because {decoded_output['reason'][0].lower() + decoded_output['reason'][1:]}\n")
-                print('=============')
                 if not isinstance(decoded_output, dict):
                     raise ValueError("Output is not a dictionary.")
                 if 'score' not in decoded_output or 'reason' not in decoded_output:
@@ -139,7 +138,7 @@ class VLMProcessor:
                 image_score_dict = {}
 
                 for target_code in target_codes:
-                    print(f"Agent: Jumping into code theme {target_code}...")
+                    print(f"Agent: Jumping into code theme {target_code}...\n")
                     valid_scores = class_dict[target_code]
                     format_prompt = f"""
                                     Please provide a single numerical value within the range {valid_scores}, along with a clear and concise explanation for your choice.\n\n
@@ -163,6 +162,6 @@ class VLMProcessor:
 
                 results[f"{block_id}/{direction}"] = image_score_dict
 
-        print (f"\nAgent: Merging my annotations and saving output to {agent_annotation_path} ... ")
+        print (f"\nAgent: Merging my annotations and saving output to {agent_annotation_path} ... \n=============")
         self.generate_agent_anno_file(results,annotation_path,agent_annotation_path)
         return results
