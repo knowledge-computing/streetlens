@@ -34,7 +34,7 @@ class AutomatedPromptTuner:
         role_prompt = decoded.split('assistant')[-1].strip()
 
         self.role_prompt = role_prompt
-        print(f"Agent: {self.role_prompt.replace('You are','I am')}")
+        print(f"Agent: {self.role_prompt.replace('You are','I am').replace('You','I')}")
         return self.role_prompt
 
     def construct_codebook_prompt(self):
@@ -58,11 +58,10 @@ class AutomatedPromptTuner:
 
                 First, write one sentence to complete the system prompt.\n
 
-                Then, write 2–3 clear sentences for the user prompt using the EXACT SAME numeric options.\n
+                Then, write 2–3 clear sentences for the user prompt using the EXACT SAME numeric options.\n\n
 
-                Please answer the following using only two lines:
-
-                system_prompt: <your system prompt text here>
+                Please answer the following using only two lines:\n
+                system_prompt: <your system prompt text here>\n
                 user_prompt: <your user prompt text here>
 
                 Do NOT include any JSON, brackets, or code formatting. Just output exactly these two lines.
