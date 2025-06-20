@@ -30,10 +30,63 @@ class AutomatedPromptTuner:
         Based on the expertise demonstrated, generate a general professional role description of yourself in one to two sentences, starting with "You are" and written in the second person.\n
         This will be used as a prompt introduction.
         """
-        decoded = self.vlm_processor.run(self.vlm_processor.prepare_messages(question))
+        decoded = self.vlm_processor.run(self.vlm_processor.prepare_messages(question), max_new_tokens=75)
         role_prompt = decoded.split('assistant')[-1].strip()
         print(f"Agent: Here is the generated role prompt:", role_prompt)
 
         self.role_prompt = role_prompt
-        return role_prompt
+        return self.role_prompt
 
+    def construct_codebook_prompt(self):
+        if not self.data_config.codebook_path:
+            print('No codebook input to construct codebook prompt')
+            return
+
+        print(f"Agent: Reading codebook...")
+        with open(self.data_config.codebook_path, 'r') as file:
+            codebook_dict = json.load(file)
+        
+        output_dict = {}
+        for key, value in codebook_dict.items():
+            print(f"Agent: Processing question and answer pairs of code #{key}... Generating refined codebook prompt...")
+            qa_pair = f"{{{value}}}"
+            while True:
+                question = f"""
+                {qa_pair}\n\n
+
+                Review the question and answer options above. Guide a vision-language model to assess environmental features in street view images using only visual input.\n
+
+                First, write one sentence to complete the system prompt.\n
+
+                Then, write 2–3 clear sentences for the user prompt using the EXACT SAME numeric options.\n
+
+                Please answer the following using only two lines:
+
+                system_prompt: <your system prompt text here>
+                user_prompt: <your user prompt text here>
+
+                Do NOT include any JSON, brackets, or code formatting. Just output exactly these two lines.
+                """
+
+                decoded = self.vlm_processor.run(self.vlm_processor.prepare_messages(question), max_new_tokens=2000)
+                response = decoded.split('assistant')[-1].strip()
+                try:
+                    response_dict = {}
+                    for line in response.strip().splitlines():
+                        line = line.strip()
+                        if not line or ':' not in line:
+                            continue
+                        k, v = line.split(":", 1)
+                        response_dict[k.strip()] = v.strip()
+
+                    output_dict[key] = response_dict
+                    if self.role_prompt is not None:
+                        output_dict[key]['system_prompt'] = self.role_prompt + output_dict[key]['system_prompt']
+                    output_dict[key]['user_prompt'] = output_dict[key]['user_prompt'] + " DO NOT PROVIDE ANY OTHER OUTPUT TEXT OR EXPLANATION."
+                    break
+                except Exception as e:
+                    print(e)
+                    continue
+
+        self.codebook_prompt_dict = output_dict
+        return self.codebook_prompt_dict

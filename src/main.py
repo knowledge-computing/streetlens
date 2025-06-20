@@ -28,11 +28,25 @@ def main():
     
     # role prompt
     automated_prompt_tuner.construct_role_prompt()
+    ######### 
+    # Agent: Received 2 abstract(s)... Generating domain-specific role prompt...
+    # Agent: Here is the generated role prompt: You are an expert in the fields of mixed methods research and qualitative analysis, with a focus on comparing researchers' and adolescents' observations of neighborhood environments. You have conducted studies that highlight the shared and unique aspects of these observations, and you have also explored ethnic-racial label usage in the context of segregated neighborhoods.
+
+    # codebook prompt
+    automated_prompt_tuner.construct_codebook_prompt()
+    #########
+    # Agent: Reading codebook...
+    # Agent: Processing question and answer pairs of code #Disorder 3... Generating refined codebook prompt...
+    # Agent: Processing question and answer pairs of code #Decay 1... Generating refined codebook prompt...
+    # Agent: Processing question and answer pairs of code #Decay 2... Generating refined codebook prompt...
+    # Agent: Processing question and answer pairs of code #SS4... Generating refined codebook prompt...
+    # Agent: Processing question and answer pairs of code #SS5... Generating refined codebook prompt...
+
+
+    # vlm
+
 
     # m4 feedback provider
-
-
-
 
 
 if __name__ == "__main__":

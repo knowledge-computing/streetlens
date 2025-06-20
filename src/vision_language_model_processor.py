@@ -32,7 +32,7 @@ class VLMProcessor:
         image = Image.open(path).convert("RGB")
         return T.ToTensor()(image)
 
-    def run(self, text, image_path=None, image_url=None, max_new_tokens=75):
+    def run(self, text, image_path=None, image_url=None, max_new_tokens=1000):
         messages = self.prepare_messages(text, image_path, image_url)
 
         inputs = self.processor.apply_chat_template(
@@ -45,7 +45,7 @@ class VLMProcessor:
         ).to(self.model.device, dtype=self.dtype)
 
         with torch.inference_mode():
-            outputs = self.model.generate(**inputs, max_new_tokens=max_new_tokens)
+            outputs = self.model.generate(**inputs, max_new_tokens=max_new_tokens, pad_token_id=self.processor.tokenizer.eos_token_id)
 
         return self.processor.batch_decode(outputs, skip_special_tokens=True)[0]
 
