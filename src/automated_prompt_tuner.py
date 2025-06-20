@@ -35,6 +35,7 @@ class AutomatedPromptTuner:
         print(f"Agent: Here is the generated role prompt:", role_prompt)
 
         self.role_prompt = role_prompt
+        print("Agent: I am now an expert...")
         return self.role_prompt
 
     def construct_codebook_prompt(self):
