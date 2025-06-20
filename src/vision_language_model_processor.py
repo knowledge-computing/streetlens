@@ -72,14 +72,12 @@ class VLMProcessor:
     def _run_for_score(self, prompt, image_path, valid_scores, max_retries=5):
         import ast
         attempts = 0
-        print(f"Agent: Loading and annotating image from {image_path}...")
+        print(f"\tAgent: Loading and annotating image from {image_path}...")
         while attempts < max_retries:
             try:            
                 decoded_str = self.run(prompt, image_path=image_path, max_new_tokens=1024).strip()
                 decoded_output = self.extract_dict_from_response(decoded_str)
                 decoded_output = ast.literal_eval(decoded_output)
-                print(f"Agent: My annotation is {decoded_output['score']} ")
-                print(f"Agent: Generating explanation... Because {decoded_output['reason'][0].lower() + decoded_output['reason'][1:]}\n")
                 if not isinstance(decoded_output, dict):
                     raise ValueError("Output is not a dictionary.")
                 if 'score' not in decoded_output or 'reason' not in decoded_output:
@@ -87,6 +85,9 @@ class VLMProcessor:
                 score = int(decoded_output['score'])
                 if score not in valid_scores:
                     raise ValueError("Score not in valid range")
+
+                print(f"\tAgent: My annotation is {decoded_output['score']} ")
+                print(f"\tAgent: Generating explanation... Because {decoded_output['reason'][0].lower() + decoded_output['reason'][1:]}\n")
                 return score
             except Exception as e:
                 # print(f"Invalid response, retrying ({attempts + 1}/{max_retries}): {e}")
@@ -162,6 +163,6 @@ class VLMProcessor:
 
                 results[f"{block_id}/{direction}"] = image_score_dict
 
-        print (f"\nAgent: Merging my annotations and saving output to {agent_annotation_path} ... \n=============")
+        print (f"\nAgent: Merging my annotations and saving output to {agent_annotation_path} ...\n")
         self.generate_agent_anno_file(results,annotation_path,agent_annotation_path)
         return results
