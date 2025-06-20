@@ -12,7 +12,10 @@ def main():
     codebook_path = './dataset/annotation/sso_codebook.json'
     paper_path = './dataset/paper/abstract.json'
     annotation_path = './dataset/annotation/sso_annotation.csv'
-    street_block_id = ['62146', '281', '282', '9576']
+    street_block_id = ['281']
+    # street_block_id = ['62146', '281', '282', '9576']
+
+    agent_annotation_path = './dataset/annotation/agent_annotation.csv'
 
     # m1 data processor
     data_config = DataProcessor.DataConfig(codebook_path=codebook_path, annotation_path=annotation_path, paper_path=paper_path, street_block_id=street_block_id)
@@ -42,9 +45,13 @@ def main():
     # Agent: Processing question and answer pairs of code #SS4... Generating refined codebook prompt...
     # Agent: Processing question and answer pairs of code #SS5... Generating refined codebook prompt...
 
-
     # vlm
-
+    data_config.image_dir = './dataset/img/'
+    data_config.role_prompt = automated_prompt_tuner.role_prompt
+    data_config.codebook_prompt_dict = automated_prompt_tuner.codebook_prompt_dict
+    data_config.agent_annotation_path = agent_annotation_path
+    
+    vlm_processor.generate_annotation()
 
     # m4 feedback provider
 
