@@ -88,30 +88,65 @@ class VLMProcessor:
 
                 print(f"\tAgent: My annotation is {decoded_output['score']} ")
                 print(f"\tAgent: Generating explanation... Because {decoded_output['reason'][0].lower() + decoded_output['reason'][1:]}\n")
-                return score
+                return score , str(decoded_output['reason'][0].lower() + decoded_output['reason'][1:])
             except Exception as e:
                 # print(f"Invalid response, retrying ({attempts + 1}/{max_retries}): {e}")
                 attempts += 1
                 
         # print("Maximum number of retries reached. Returning fallback score 99.")
-        return 99
+        return 99 , ""
 
-    def generate_agent_anno_file(self,output_dict,annotation_path,agent_annotation_path):
+    def generate_agent_anno_file(self, output_dict, annotation_path, agent_annotation_path):
         import pandas as pd
+        import json
+
         df = pd.read_csv(annotation_path)
         df.columns = df.columns.str.strip()
         new_rows = []
+        reason_dict = {}
+
         for block_face, scores in output_dict.items():
             block_id, direction = block_face.split('/')
             row = {
                 'Street Block ID': block_id.strip(),
                 'Direction of Target Block Face': direction.strip()
             }
-            row.update(scores)
+            reason_entry = {}
+            for target_code, value in scores.items():
+                score = value[0]
+                reasons = value[1]
+                row[target_code] = score
+                row[target_code] = score
+                reason_entry[target_code] = reasons
+                # if isinstance(reasons, list):
+                #     reason_str_list = [f"{k}: {v}" for r in reasons for k, v in r.items()]
+                #     row[f"{target_code}_Reason"] = " / ".join(reason_str_list)
+                # else:
+                #     row[f"{target_code}_Reason"] = str(reasons)
             new_rows.append(row)
+            reason_dict[f"{block_id.strip()}/{direction.strip()}"] = reason_entry
+
         df_agent = pd.DataFrame(new_rows)
-        merged_df = pd.merge(df, df_agent, on=['Street Block ID', 'Direction of Target Block Face'], how='left', suffixes=('', '_agent'))
+
+        df['Street Block ID'] = df['Street Block ID'].astype(str).str.strip()
+        df['Direction of Target Block Face'] = df['Direction of Target Block Face'].astype(str).str.strip()
+
+        df_agent['Street Block ID'] = df_agent['Street Block ID'].astype(str).str.strip()
+        df_agent['Direction of Target Block Face'] = df_agent['Direction of Target Block Face'].astype(str).str.strip()
+
+        # merge agent output with original
+        merged_df = pd.merge(
+            df,
+            df_agent,
+            on=['Street Block ID', 'Direction of Target Block Face'],
+            how='left',
+            suffixes=('', '_agent')
+        )
+
         merged_df.to_csv(agent_annotation_path, index=False)
+        reason_json_path = agent_annotation_path.replace(".csv", "_reason.json")
+        with open(reason_json_path, "w", encoding="utf-8") as f:
+            json.dump(reason_dict, f, indent=1, ensure_ascii=False)
         return merged_df
 
     def generate_annotation(self):
@@ -149,20 +184,22 @@ class VLMProcessor:
                                     """
 
                     score_list = []
+                    reason_list = []
                     for fname in os.listdir(dir_path):
                         if fname.endswith(".json"):
                             continue
                         img_path = os.path.join(dir_path, fname)
                         full_prompt = f"{role_prompt}\n{codebook[target_code]}\n{format_prompt}"
-                        score = self._run_for_score(full_prompt, img_path, valid_scores)
+                        score, reason = self._run_for_score(full_prompt, img_path, valid_scores)
                         
                         score_list.append(score)
+                        reason_list.append({fname:reason})
 
                     final_score = self._aggregate_scores(score_list, valid_scores)
-                    image_score_dict[target_code] = final_score
+                    image_score_dict[target_code] = [final_score,reason_list]
 
                 results[f"{block_id}/{direction}"] = image_score_dict
-
+                
         print (f"\nAgent: Merging my annotations and saving output to {agent_annotation_path} ...\n")
         self.generate_agent_anno_file(results,annotation_path,agent_annotation_path)
         return results

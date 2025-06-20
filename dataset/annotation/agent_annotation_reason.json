@@ -1,0 +1,149 @@
+{
+ "281/W": {
+  "Disorder 3": [
+   {
+    "8.jpg": "the image does not show any visible graffiti on buildings, signs, walls, fences, sidewalks, poles, or streets. The scene appears to be a quiet street with a car and some trees, but no graffiti is present."
+   },
+   {
+    "7.jpg": "the image does not show any visible graffiti on buildings, signs, walls, fences, sidewalks, poles, or streets. The scene appears to be a typical gas station with no signs of graffiti."
+   },
+   {
+    "6.jpg": "the image does not show any graffiti on buildings, signs, walls, fences, sidewalks, poles, or streets. The scene appears to be a quiet residential area with no visible markings or tags."
+   },
+   {
+    "10.jpg": "the image does not show any visible graffiti on buildings, signs, walls, fences, sidewalks, poles, or streets. The scene appears to be a quiet street with no signs of graffiti."
+   },
+   {
+    "9.jpg": "the image does not show any visible graffiti on buildings, signs, walls, fences, sidewalks, poles, or streets. The scene appears to be a typical gas station with no signs of graffiti."
+   },
+   {
+    "2.jpg": "the image does not show any graffiti on buildings, signs, walls, fences, sidewalks, poles, or streets. The scene appears to be a quiet residential area with no visible markings or tags."
+   },
+   {
+    "1.jpg": "the image does not show any visible graffiti on buildings, signs, walls, fences, sidewalks, poles, or streets. The scene appears to be a quiet, possibly residential area with no signs of graffiti."
+   },
+   {
+    "3.jpg": "the image does not show any visible graffiti on buildings, signs, walls, fences, sidewalks, poles, or streets. The scene appears to be a quiet residential area with no signs of graffiti."
+   },
+   {
+    "5.jpg": "the image does not show any visible graffiti on buildings, signs, walls, fences, sidewalks, poles, or streets. The scene appears to be a quiet residential area with no signs of graffiti."
+   }
+  ],
+  "Decay 1": [
+   {
+    "8.jpg": ""
+   },
+   {
+    "7.jpg": "the street in the image shows significant cracks and potholes, indicating poor condition. Most of the street has visible cracks and potholes, which are not recently filled in. This suggests that the street is in a poor condition."
+   },
+   {
+    "6.jpg": "the street shows significant cracks and potholes, indicating poor condition. Most of the street has visible cracks and potholes, which are not recently filled in. This suggests that the street is in a poor condition."
+   },
+   {
+    "10.jpg": "the street shows significant cracks and potholes, indicating poor condition. Most of the street has visible cracks and potholes, which have not been recently filled in. This suggests that the street is in a poor condition."
+   },
+   {
+    "9.jpg": "the street in the image shows significant cracks and potholes, indicating poor condition. Most of the street has visible cracks and potholes, which have not been recently filled in. This suggests that the street is in a poor condition. The presence of an under-construction street is not relevant to the evaluation of the current condition of the visible street."
+   },
+   {
+    "2.jpg": "the street shows significant cracks and potholes, indicating poor condition. Most of the street has visible cracks and potholes, which have not been recently filled in. This suggests that the street is in a poor condition."
+   },
+   {
+    "1.jpg": "the street in the image shows significant cracks and potholes, indicating poor condition. Most of the street has visible cracks and potholes, which are not recently filled in. This suggests that the street is in a poor condition. The presence of an under-construction street does not affect the evaluation of the current condition of the visible street."
+   },
+   {
+    "3.jpg": "the street in the image shows significant cracks and potholes, indicating poor condition. Most of the street has visible cracks and potholes, which are not recently filled in. This suggests that the street is in a poor condition. The presence of an under-construction sign does not change the overall condition assessment."
+   },
+   {
+    "5.jpg": "the street in the image shows significant cracks and potholes, indicating poor condition. Most of the street has visible cracks and potholes, which have not been recently filled in. This suggests that the street is in a poor condition. The presence of an under-construction area does not change the overall condition assessment."
+   }
+  ],
+  "Decay 2": [
+   {
+    "8.jpg": ""
+   },
+   {
+    "7.jpg": "the sidewalk in the image shows significant signs of deterioration, including holes, sizable cracks, and weeds along most of the sidewalk, indicating poor condition."
+   },
+   {
+    "6.jpg": ""
+   },
+   {
+    "10.jpg": "the sidewalk in the image shows significant cracks and uneven pavement, with weeds growing along most of the sidewalk, indicating poor condition."
+   },
+   {
+    "9.jpg": "the sidewalk in the image shows significant cracks, crumbling pavement, and outgrown weeds along most of the sidewalk, indicating poor condition."
+   },
+   {
+    "2.jpg": "the sidewalk in the image shows significant cracks and uneven pavement, with weeds growing along most of the sidewalk. This indicates poor condition."
+   },
+   {
+    "1.jpg": ""
+   },
+   {
+    "3.jpg": "the sidewalk in the image shows significant cracks, crumbling pavement, and outgrown weeds along most of the sidewalk, indicating poor condition."
+   },
+   {
+    "5.jpg": ""
+   }
+  ],
+  "SS4": [
+   {
+    "8.jpg": "the image shows a pedestrian crossing sign, indicating the presence of crosswalks or signs signaling to watch for pedestrians."
+   },
+   {
+    "7.jpg": "the image shows a street with a visible yellow double line, which typically indicates a no-passing zone, but it does not explicitly show crosswalks or pedestrian signs. The presence of a bench and a gas station suggests pedestrian activity, but the image does not clearly display signs for pedestrians."
+   },
+   {
+    "6.jpg": "there is a pedestrian crossing sign visible on the left side of the image, indicating the presence of crosswalks or signs signaling to watch for pedestrians."
+   },
+   {
+    "10.jpg": "the image shows visible crosswalks and pedestrian signs, indicating a focus on safety for pedestrians. The presence of these elements suggests an emphasis on shared aspects of neighborhood environments."
+   },
+   {
+    "9.jpg": "the image shows a street with a visible yellow double line, which typically indicates a no-passing zone, but it does not explicitly show crosswalks or pedestrian signs. The road markings suggest caution for vehicles, but they do not signal pedestrian activity."
+   },
+   {
+    "2.jpg": "the image shows a street with a visible yellow double line, which typically indicates a no-passing zone, but it does not clearly show crosswalks or pedestrian signs. The road appears to be a two-way street without visible pedestrian markings."
+   },
+   {
+    "1.jpg": "the image shows a street with a visible crosswalk, indicating the presence of crosswalks or signs signaling to watch for pedestrians. The crosswalk is clearly marked, suggesting attention to pedestrian safety. However, there are no visible signs specifically indicating pedestrian crossings, so the visibility is moderate."
+   },
+   {
+    "3.jpg": "there is a pedestrian crossing sign visible in the image, indicating the presence of crosswalks or signs signaling to watch for pedestrians."
+   },
+   {
+    "5.jpg": "the image shows a street with a double yellow line, which typically indicates a no-passing zone, but it does not explicitly show crosswalks or pedestrian signs. The presence of a sidewalk and the absence of visible pedestrian signals suggest that the area may not have active crosswalks or pedestrian signs."
+   }
+  ],
+  "SS5": [
+   {
+    "8.jpg": "there are no visible signs or painted markers indicating designated bike lanes in the image."
+   },
+   {
+    "7.jpg": "there are no visible signs or painted markers indicating designated bike lanes in the image."
+   },
+   {
+    "6.jpg": "there are no visible signs or painted markers indicating designated bike lanes in the image."
+   },
+   {
+    "10.jpg": "there are no visible signs or painted markers indicating designated bike lanes in the image."
+   },
+   {
+    "9.jpg": "there are no visible signs or painted markers indicating designated bike lanes in the image."
+   },
+   {
+    "2.jpg": "there are no visible signs or painted markers indicating designated bike lanes on the road in the image."
+   },
+   {
+    "1.jpg": "there are no visible signs or painted markers indicating designated bike lanes in the image."
+   },
+   {
+    "3.jpg": "there are no visible signs or painted markers indicating designated bike lanes in the image."
+   },
+   {
+    "5.jpg": "there are no visible signs or painted markers indicating designated bike lanes on the road in the image."
+   }
+  ]
+ }
+}
