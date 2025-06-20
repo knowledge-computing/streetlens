@@ -32,7 +32,6 @@ class AutomatedPromptTuner:
         """
         decoded = self.vlm_processor.run(self.vlm_processor.prepare_messages(question), max_new_tokens=75)
         role_prompt = decoded.split('assistant')[-1].strip()
-        print(f"Agent: Here is the generated role prompt:", role_prompt)
 
         self.role_prompt = role_prompt
         print(f"Agent: {self.role_prompt.replace('You are','I am')}")
