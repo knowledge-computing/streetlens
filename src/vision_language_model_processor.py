@@ -72,7 +72,7 @@ class VLMProcessor:
     def _run_for_score(self, prompt, image_path, valid_scores, max_retries=5):
         import ast
         attempts = 0
-        print(f"\tAgent: Loading and annotating image from {image_path}...")
+        print(f"\tStella: I got the image from {image_path}. I'm starting annotation now..")
         while attempts < max_retries:
             try:            
                 decoded_str = self.run(prompt, image_path=image_path, max_new_tokens=1024).strip()
@@ -86,8 +86,8 @@ class VLMProcessor:
                 if score not in valid_scores:
                     raise ValueError("Score not in valid range")
 
-                print(f"\tAgent: My annotation is {decoded_output['score']} ")
-                print(f"\tAgent: Generating explanation... Because {decoded_output['reason'][0].lower() + decoded_output['reason'][1:]}\n")
+                print(f"\tStella: My annotation is {decoded_output['score']} ")
+                print(f"\tStella: My explanation is that {decoded_output['reason'][0].lower() + decoded_output['reason'][1:]}\n")
                 return score , str(decoded_output['reason'][0].lower() + decoded_output['reason'][1:])
             except Exception as e:
                 # print(f"Invalid response, retrying ({attempts + 1}/{max_retries}): {e}")
@@ -174,7 +174,7 @@ class VLMProcessor:
                 image_score_dict = {}
 
                 for target_code in target_codes:
-                    print(f"Agent: Jumping into code theme {target_code}...\n")
+                    print(f"Stella: Jumping into measure {target_code}...\n")
                     valid_scores = class_dict[target_code]
                     format_prompt = f"""
                                     Please provide a single numerical value within the range {valid_scores}, along with a clear and concise explanation for your choice.\n\n
@@ -200,6 +200,6 @@ class VLMProcessor:
 
                 results[f"{block_id}/{direction}"] = image_score_dict
                 
-        print (f"\nAgent: Merging my annotations and saving output to {agent_annotation_path} ...\n")
+        print (f"\nStreetlens: Finalizing merge of annotations and saving results to {agent_annotation_path}.\n")
         self.generate_agent_anno_file(results,annotation_path,agent_annotation_path)
         return results

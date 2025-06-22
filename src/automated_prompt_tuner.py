@@ -22,7 +22,7 @@ class AutomatedPromptTuner:
             paper_data = json.load(file)
 
         abstracts = list(paper_data.values())
-        print(f"Agent: Received {len(abstracts)} abstract(s)... Generating domain-specific role prompt...")
+        print(f"Stella: Looks like we have {len(abstracts)} abstract(s). Let me step into a new role. I’m ready for it!")
 
         abstracts = '\n\n '.join(abstracts)
         question = f"""
@@ -34,7 +34,11 @@ class AutomatedPromptTuner:
         role_prompt = decoded.split('assistant')[-1].strip()
 
         self.role_prompt = role_prompt
-        print(f"Agent: {self.role_prompt.replace('You are','I am').replace('You','I')}")
+
+        decoded = self.vlm_processor.run(self.vlm_processor.prepare_messages(role_prompt+"Who are you?"), max_new_tokens=75)
+        role_answer_prompt = decoded.split('assistant')[-1].strip()
+        print(f"Stella: {role_answer_prompt}")
+
         return self.role_prompt
 
     def construct_codebook_prompt(self):
@@ -42,13 +46,13 @@ class AutomatedPromptTuner:
             print('No codebook input to construct codebook prompt')
             return
 
-        print(f"Agent: Reading codebook...")
+        print(f"Stella: I'm reading codebook...")
         with open(self.data_config.codebook_path, 'r') as file:
             codebook_dict = json.load(file)
         
         output_dict = {}
         for key, value in codebook_dict.items():
-            print(f"Agent: Processing question and answer pairs of code theme {key}... Generating refined codebook prompt...")
+            print(f"Stella: I'm looking over the question-answer pairs for measure {key}. I'm refining the codebook prompt....")
             qa_pair = f"{{{value}}}"
             while True:
                 question = f"""
