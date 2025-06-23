@@ -128,21 +128,6 @@ class VLMProcessor:
 
         df_agent = pd.DataFrame(new_rows)
 
-        # df['Street Block ID'] = df['Street Block ID'].astype(str).str.strip()
-        # df['Direction of Target Block Face'] = df['Direction of Target Block Face'].astype(str).str.strip()
-
-        df_agent['Street Block ID'] = df_agent['Street Block ID'].astype(str).str.strip()
-        df_agent['Direction of Target Block Face'] = df_agent['Direction of Target Block Face'].astype(str).str.strip()
-
-        # # merge agent output with original
-        # merged_df = pd.merge(
-        #     df,
-        #     df_agent,
-        #     on=['Street Block ID', 'Direction of Target Block Face'],
-        #     how='left',
-        #     suffixes=('', '_agent')
-        # )
-
         df_agent.to_csv(agent_annotation_path, index=False)
         reason_json_path = agent_annotation_path.replace(".csv", "_reason.json")
         with open(reason_json_path, "w", encoding="utf-8") as f:
