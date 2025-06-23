@@ -173,7 +173,8 @@ class VLMProcessor:
                                     Please provide a single numerical value within the range {valid_scores}, along with a clear and concise explanation for your choice.\n\n
                                     Your response must be a dictionary in the following format:\n
                                     {{'score': <integer>, 'reason': <short explanation string>}}\n\n
-                                    Strictly follow the output format. Do not include any extra text or modify the structure.
+                                    When writing the 'reason', please use a friendly and natural tone. Avoid overly formal or technical language.\n
+                                    Strictly follow the output format. Do not include any extra text or modify the structure.\n
                                     """
 
                     score_list = []
