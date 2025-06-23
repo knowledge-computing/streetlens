@@ -99,7 +99,8 @@ class VLMProcessor:
     def generate_agent_anno_file(self, output_dict, annotation_path, agent_annotation_path):
         import pandas as pd
         import json
-
+        add_cols_from_anno =  ['Block Face ID:','Census Tract ID:'
+                ,'Fully Matched','Street Block Faces on:','Boundary Streets:','Picture Date (mm/year)']
         df = pd.read_csv(annotation_path)
         df.columns = df.columns.str.strip()
         new_rows = []
@@ -107,10 +108,16 @@ class VLMProcessor:
 
         for block_face, scores in output_dict.items():
             block_id, direction = block_face.split('/')
+        
             row = {
                 'Street Block ID': block_id.strip(),
                 'Direction of Target Block Face': direction.strip()
             }
+            for _, anno_row in df.iterrows():
+                if str(block_id).strip() in str(anno_row['Street Block ID']).strip() and str(anno_row['Direction of Target Block Face']).strip() == direction.strip():
+                    for col in add_cols_from_anno:
+                        row[col] = anno_row[col]
+                    break  
             reason_entry = {}
             for target_code, value in scores.items():
                 score = value[0]
@@ -129,6 +136,7 @@ class VLMProcessor:
         df_agent = pd.DataFrame(new_rows)
 
         df_agent.to_csv(agent_annotation_path, index=False)
+
         reason_json_path = agent_annotation_path.replace(".csv", "_reason.json")
         with open(reason_json_path, "w", encoding="utf-8") as f:
             json.dump(reason_dict, f, indent=1, ensure_ascii=False)
