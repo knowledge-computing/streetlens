@@ -86,9 +86,9 @@ class VLMProcessor:
                 if score not in valid_scores:
                     raise ValueError("Score not in valid range")
 
-                print(f"\tStella: My annotation is {decoded_output['score']} ")
-                print(f"\tStella: My explanation is that {decoded_output['reason'][0].lower() + decoded_output['reason'][1:]}\n")
-                return score , str(decoded_output['reason'][0].lower() + decoded_output['reason'][1:])
+                print(f"\tStella: My annotation is {score} ")
+                print(f"\tStella: {decoded_output['reason'][0] + decoded_output['reason'][1:]}\n")
+                return score , str(decoded_output['reason'][0] + decoded_output['reason'][1:])
             except Exception as e:
                 # print(f"Invalid response, retrying ({attempts + 1}/{max_retries}): {e}")
                 attempts += 1
