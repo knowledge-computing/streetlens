@@ -72,7 +72,7 @@ class VLMProcessor:
     def _run_for_score(self, prompt, image_path, valid_scores, max_retries=5):
         import ast
         attempts = 0
-        print(f"\tStella: I got the image from {image_path}. I'm starting annotation now..")
+        print(f"\tStella: I got the image from {image_path}. I'm starting annotation now...")
         while attempts < max_retries:
             try:            
                 decoded_str = self.run(prompt, image_path=image_path, max_new_tokens=1024).strip()

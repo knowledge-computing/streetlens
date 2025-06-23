@@ -52,7 +52,7 @@ class AutomatedPromptTuner:
         
         output_dict = {}
         for key, value in codebook_dict.items():
-            print(f"Stella: I'm looking over the question-answer pairs for measure {key}. I'm refining the codebook prompt....")
+            print(f"Stella: I'm looking over the question-answer pairs for measure {key}. I'm refining the codebook prompt...")
             qa_pair = f"{{{value}}}"
             while True:
                 question = f"""
