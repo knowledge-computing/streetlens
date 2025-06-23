@@ -117,7 +117,7 @@ class VLMProcessor:
                 reasons = value[1]
                 row[target_code] = score
                 row[target_code] = score
-                reason_entry[target_code] = reasons
+                reason_entry[target_code] = f"{reasons}"
                 # if isinstance(reasons, list):
                 #     reason_str_list = [f"{k}: {v}" for r in reasons for k, v in r.items()]
                 #     row[f"{target_code}_Reason"] = " / ".join(reason_str_list)
@@ -128,26 +128,26 @@ class VLMProcessor:
 
         df_agent = pd.DataFrame(new_rows)
 
-        df['Street Block ID'] = df['Street Block ID'].astype(str).str.strip()
-        df['Direction of Target Block Face'] = df['Direction of Target Block Face'].astype(str).str.strip()
+        # df['Street Block ID'] = df['Street Block ID'].astype(str).str.strip()
+        # df['Direction of Target Block Face'] = df['Direction of Target Block Face'].astype(str).str.strip()
 
         df_agent['Street Block ID'] = df_agent['Street Block ID'].astype(str).str.strip()
         df_agent['Direction of Target Block Face'] = df_agent['Direction of Target Block Face'].astype(str).str.strip()
 
-        # merge agent output with original
-        merged_df = pd.merge(
-            df,
-            df_agent,
-            on=['Street Block ID', 'Direction of Target Block Face'],
-            how='left',
-            suffixes=('', '_agent')
-        )
+        # # merge agent output with original
+        # merged_df = pd.merge(
+        #     df,
+        #     df_agent,
+        #     on=['Street Block ID', 'Direction of Target Block Face'],
+        #     how='left',
+        #     suffixes=('', '_agent')
+        # )
 
-        merged_df.to_csv(agent_annotation_path, index=False)
+        df_agent.to_csv(agent_annotation_path, index=False)
         reason_json_path = agent_annotation_path.replace(".csv", "_reason.json")
         with open(reason_json_path, "w", encoding="utf-8") as f:
             json.dump(reason_dict, f, indent=1, ensure_ascii=False)
-        return merged_df
+        return df_agent
 
     def generate_annotation(self):
         results = {}
