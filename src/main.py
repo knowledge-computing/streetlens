@@ -2,13 +2,27 @@ import os
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 os.environ['HF_HOME'] = '/data/vllm'
 
+import logging
+from io import StringIO
+
 from data_processor import *
 from automated_prompt_tuner import *
 from vision_language_model_processor import *
 from feedback_provider import *
 
+system_logger = logging.getLogger("StreetLens")
+agent_logger = logging.getLogger("Stella")
+
+for logger in [system_logger, agent_logger]:
+    logger.setLevel(logging.INFO)
+    logger.stream = StringIO()
+    handler = logging.StreamHandler(logger.stream)
+    formatter = logging.Formatter("%(levelname)s: %(message)s")
+    handler.setFormatter(formatter)
+    logger.handlers = []
+    logger.addHandler(handler)
+
 def main():
-    # todo: get input for path
     codebook_path = './dataset/annotation/sso_codebook.json'
     paper_path = './dataset/paper/abstract.json'
     annotation_path = './dataset/annotation/sso_annotation.csv'
@@ -24,7 +38,9 @@ def main():
     # m3 vision langauge model processor
     device = "cuda" if torch.cuda.is_available() else "cpu"
     data_config.model_name = 'OpenGVLab/InternVL3-2B-hf'
-    vlm_processor = VLMProcessor(data_processor.data_config, device=device)
+    data_config.system_logger = system_logger
+    data_config.agent_logger = agent_logger
+    vlm_processor = VLMProcessor(data_config=data_config, device=device)
 
     # m2 automated prompt tuner
     automated_prompt_tuner = AutomatedPromptTuner(data_config=data_config, vlm_processor=vlm_processor)
@@ -54,7 +70,6 @@ def main():
     vlm_processor.generate_annotation()
 
     # m4 feedback provider
-
 
 if __name__ == "__main__":
     main()

@@ -86,8 +86,8 @@ class VLMProcessor:
                 if score not in valid_scores:
                     raise ValueError("Score not in valid range")
 
-                print(f"\tStella: My annotation is {score} ")
-                print(f"\tStella: {decoded_output['reason'][0] + decoded_output['reason'][1:]}\n")
+                self.data_config.agent_logger.info(f"My annotation is {score} ")
+                self.data_config.agent_logger.info(f"\tStella: {decoded_output['reason'][0] + decoded_output['reason'][1:]}\n")
                 return score , str(decoded_output['reason'][0] + decoded_output['reason'][1:])
             except Exception as e:
                 # print(f"Invalid response, retrying ({attempts + 1}/{max_retries}): {e}")
@@ -167,7 +167,7 @@ class VLMProcessor:
                 image_score_dict = {}
 
                 for target_code in target_codes:
-                    print(f"Stella: Jumping into measure {target_code}...\n")
+                    self.data_config.agent_logger.info(f"Jumping into measure {target_code}...\n")
                     valid_scores = class_dict[target_code]
                     format_prompt = f"""
                                     Please provide a single numerical value within the range {valid_scores}, along with a clear and concise explanation for your choice.\n\n
@@ -194,6 +194,6 @@ class VLMProcessor:
 
                 results[f"{block_id}/{direction}"] = image_score_dict
                 
-        print (f"\nStreetlens: Finalizing merge of annotations and saving results to {agent_annotation_path}.\n")
+        self.data_config.system_logger.info(f"Finalizing merge of annotations and saving results to {agent_annotation_path}.\n")
         self.generate_agent_anno_file(results,annotation_path,agent_annotation_path)
         return results
