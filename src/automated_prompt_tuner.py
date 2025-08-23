@@ -43,7 +43,6 @@ class AutomatedPromptTuner:
         return self.role_prompt
 
     def parse_binary_label(self,text_raw):
-        # Prefer content after the last 'assistant' marker
         segment = text_raw.rsplit("assistant", 1)[-1] if "assistant" in text_raw else text_raw
         import re
         matches = re.findall(r'(?<!\d)([01])(?!\d)', segment)
