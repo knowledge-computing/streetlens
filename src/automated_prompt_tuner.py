@@ -12,6 +12,7 @@ class AutomatedPromptTuner:
         self.data_config = data_config
         self.vlm_processor = vlm_processor
         self.role_prompt = None
+        self.task_types_dict = None
 
     def construct_role_prompt(self):
         if not self.data_config.paper_path:
@@ -40,6 +41,41 @@ class AutomatedPromptTuner:
         self.data_config.agent_logger.info(f"{role_answer_prompt}")
 
         return self.role_prompt
+
+    def parse_binary_label(self,text_raw):
+        # Prefer content after the last 'assistant' marker
+        segment = text_raw.rsplit("assistant", 1)[-1] if "assistant" in text_raw else text_raw
+        import re
+        matches = re.findall(r'(?<!\d)([01])(?!\d)', segment)
+        if not matches:
+            matches = re.findall(r'(?<!\d)([01])(?!\d)', text_raw)
+        return str(int(matches[-1]))
+        
+    def identify_task_type(self):
+        codes_task_type = {}
+        import json
+       
+        f_codebook = open(self.data_config.codebook_path,'r')
+        codebook_raw_dict = json.load(f_codebook)
+        f_codebook.close()
+        
+        for each_code in codebook_raw_dict.keys():
+            task_prompt = f'''
+                You are an annotation task classifier. 
+                Given a question and its answer options, decide if the task is **perception** (holistic/qualitative scene judgment such as condition/quality/intensity ratings) or **object_detection** (presence, counting, or localization of specific object instances). 
+                Rules: If it asks to rate/assess overall condition or quality (e.g., Good/Fair/Poor), label as perception. 
+                If it asks to detect, count, or verify specific objects (e.g., cars, signs, pedestrians), label as object_detection.
+                Question: {codebook_raw_dict[each_code]['question']}
+                Answer options: {codebook_raw_dict[each_code]['answer_options']}
+                Return only a single integer: 0 if perception, 1 if object_detection. 
+                Do not include any words, JSON, spaces, or punctuation.
+                '''
+            task_type_raw = self.vlm_processor.run(task_prompt, image_path=None, max_new_tokens=1024).strip()
+            task_type = self.parse_binary_label(task_type_raw)
+            codes_task_type[each_code] = str(task_type)
+        
+        self.task_types_dict = codes_task_type
+        return self.task_types_dict 
 
     def construct_codebook_prompt(self):
         if not self.data_config.codebook_path:

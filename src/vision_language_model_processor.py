@@ -141,39 +141,7 @@ class VLMProcessor:
         with open(reason_json_path, "w", encoding="utf-8") as f:
             json.dump(reason_dict, f, indent=1, ensure_ascii=False)
         return df_agent
-    def parse_binary_label(self,text_raw):
-        # Prefer content after the last 'assistant' marker
-        segment = text_raw.rsplit("assistant", 1)[-1] if "assistant" in text_raw else text_raw
-        import re
-        matches = re.findall(r'(?<!\d)([01])(?!\d)', segment)
-        if not matches:
-            matches = re.findall(r'(?<!\d)([01])(?!\d)', text_raw)
-        return str(int(matches[-1]))
 
-    def get_task_type(self,codes_list):
-        codes_task_type = {}
-        import json
-       
-        f_codebook = open(self.data_config.codebook_path,'r')
-        codebook_raw_dict = json.load(f_codebook)
-        f_codebook.close()
-        
-        for each_code in codes_list:
-            task_prompt = f'''
-                You are an annotation task classifier. 
-                Given a question and its answer options, decide if the task is **perception** (holistic/qualitative scene judgment such as condition/quality/intensity ratings) or **object_detection** (presence, counting, or localization of specific object instances). 
-                Rules: If it asks to rate/assess overall condition or quality (e.g., Good/Fair/Poor), label as perception. 
-                If it asks to detect, count, or verify specific objects (e.g., cars, signs, pedestrians), label as object_detection.
-                Question: {codebook_raw_dict[each_code]['question']}
-                Answer options: {codebook_raw_dict[each_code]['answer_options']}
-                Return only a single integer: 0 if perception, 1 if object_detection. 
-                Do not include any words, JSON, spaces, or punctuation.
-                '''
-            task_type_raw = self.run(task_prompt, image_path=None, max_new_tokens=1024).strip()
-            task_type = self.parse_binary_label(task_type_raw)
-            codes_task_type[each_code] = str(task_type)
-        return codes_task_type
-        
     def generate_annotation(self):
         results = {}
         image_dir = self.data_config.image_dir
@@ -192,7 +160,8 @@ class VLMProcessor:
         }
 
         target_codes = list(codebook.keys())
-        target_task_types = self.get_task_type(target_codes)
+        target_task_types = self.data_config.task_types_dict
+        # target_task_types = self.get_task_type(target_codes)
         for block_id in streetblock_ids:
             block_path = os.path.join(image_dir, block_id)
             for direction in os.listdir(block_path):
@@ -201,6 +170,16 @@ class VLMProcessor:
 
                 for target_code in target_codes:
                     self.data_config.agent_logger.info(f"Jumping into measure {target_code}...\n")
+                    if target_task_types[target_code] == '0':
+                        task_prompt = '''Assess the overall scene condition/quality from the provided inputs. 
+                        Focus on holistic visual cues rather than counting specific objects   
+                        '''
+                    else:
+                        task_prompt = '''
+                        Detect the specified object(s) strictly from visible evidence. 
+                        Report only presence/absence or counts as required.
+                        Do not rate overall condition or add qualitative judgments.
+                        '''
                     valid_scores = class_dict[target_code]
                     format_prompt = f"""
                                     Please provide a single numerical value within the range {valid_scores}, along with a clear and concise explanation for your choice.\n\n
@@ -209,14 +188,13 @@ class VLMProcessor:
                                     When writing the 'reason', please use a friendly and natural tone. Avoid overly formal or technical language.\n
                                     Strictly follow the output format. Do not include any extra text or modify the structure.\n
                                     """
-
                     score_list = []
                     reason_list = []
                     for fname in os.listdir(dir_path):
                         if fname.endswith(".json"):
                             continue
                         img_path = os.path.join(dir_path, fname)
-                        full_prompt = f"{role_prompt}\n{codebook[target_code]}\n{format_prompt}"
+                        full_prompt = f"{role_prompt}\n{task_prompt}\n{codebook[target_code]}\n{format_prompt}"
                         score, reason = self._run_for_score(full_prompt, img_path, valid_scores)
                         
                         score_list.append(score)
