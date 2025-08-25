@@ -75,7 +75,7 @@ class VLMProcessor:
     def _run_for_score(self, prompt, image_path, valid_scores, max_retries=5):
         import ast
         attempts = 0
-        self.data_config.agent_logger.info(f"\tStella: I got the image from {image_path}. I'm starting annotation now...")
+        self.data_config.agent_logger.info(f"I got the image from {image_path}. I'm starting annotation now...")
         while attempts < max_retries:
             try:            
                 decoded_str = self.run(prompt, image_path=image_path, max_new_tokens=1024).strip()
@@ -89,8 +89,8 @@ class VLMProcessor:
                 if score not in valid_scores:
                     raise ValueError("Score not in valid range")
 
-                self.data_config.agent_logger.info(f"My annotation is {score} ")
-                self.data_config.agent_logger.info(f"\t{decoded_output['reason'][0] + decoded_output['reason'][1:]}\n")
+                self.data_config.agent_logger.info(f"My annotation is {score}")
+                self.data_config.agent_logger.info(f"{decoded_output['reason'][0] + decoded_output['reason'][1:]}\n")
                 return score , str(decoded_output['reason'][0] + decoded_output['reason'][1:])
             except Exception as e:
                 # print(f"Invalid response, retrying ({attempts + 1}/{max_retries}): {e}")

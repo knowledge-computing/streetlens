@@ -64,6 +64,7 @@ def run_prompt_tuner():
     data_config.agent_logger = agent_logger
 
     automated_prompt_tuner.construct_role_prompt()
+    automated_prompt_tuner.identify_task_type()
     automated_prompt_tuner.construct_codebook_prompt()
 
     logs = f"{system_stream.getvalue()}\n{agent_stream.getvalue()}"
@@ -77,6 +78,7 @@ def run_vlm_processor():
     data_config.agent_logger = agent_logger
 
     data_config.role_prompt = automated_prompt_tuner.role_prompt
+    data_config.task_types_dict = automated_prompt_tuner.task_types_dict
     data_config.codebook_prompt_dict = automated_prompt_tuner.codebook_prompt_dict
     data_config.agent_annotation_path = agent_annotation_path
     data_config.image_dir = './dataset/img/'
@@ -85,6 +87,7 @@ def run_vlm_processor():
 
     logs = f"{system_stream.getvalue()}\n{agent_stream.getvalue()}"
     return jsonify({"logs": logs})
+    
 
 if __name__ == "__main__":
     app.run(debug=True)
