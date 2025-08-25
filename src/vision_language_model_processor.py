@@ -2,8 +2,12 @@ import os
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 os.environ['HF_HOME'] = '/data/vllm'
 
+import json
+import pandas as pd
+
 from transformers import AutoProcessor, AutoModelForImageTextToText, BitsAndBytesConfig
 import torch
+
 
 class VLMProcessor:
     def __init__(self, data_config, device, dtype=torch.bfloat16):
@@ -18,7 +22,6 @@ class VLMProcessor:
 
     def prepare_messages(self, text, image_path=None, image_url=None):
         content = [{"type": "text", "text": text}]
-
         if image_path:
             content.insert(0, {"type": "image", "image": self._load_image_tensor(image_path)})
         elif image_url:
@@ -72,7 +75,7 @@ class VLMProcessor:
     def _run_for_score(self, prompt, image_path, valid_scores, max_retries=5):
         import ast
         attempts = 0
-        print(f"\tStella: I got the image from {image_path}. I'm starting annotation now...")
+        self.data_config.agent_logger.info(f"\tStella: I got the image from {image_path}. I'm starting annotation now...")
         while attempts < max_retries:
             try:            
                 decoded_str = self.run(prompt, image_path=image_path, max_new_tokens=1024).strip()
@@ -87,7 +90,7 @@ class VLMProcessor:
                     raise ValueError("Score not in valid range")
 
                 self.data_config.agent_logger.info(f"My annotation is {score} ")
-                self.data_config.agent_logger.info(f"\tStella: {decoded_output['reason'][0] + decoded_output['reason'][1:]}\n")
+                self.data_config.agent_logger.info(f"\t{decoded_output['reason'][0] + decoded_output['reason'][1:]}\n")
                 return score , str(decoded_output['reason'][0] + decoded_output['reason'][1:])
             except Exception as e:
                 # print(f"Invalid response, retrying ({attempts + 1}/{max_retries}): {e}")
@@ -97,10 +100,7 @@ class VLMProcessor:
         return 99 , ""
 
     def generate_agent_anno_file(self, output_dict, annotation_path, agent_annotation_path):
-        import pandas as pd
-        import json
-        add_cols_from_anno =  ['Block Face ID:','Census Tract ID:'
-                ,'Fully Matched','Street Block Faces on:','Boundary Streets:','Picture Date (mm/year)']
+        add_cols_from_anno =  ['Block Face ID:','Census Tract ID:','Fully Matched','Street Block Faces on:','Boundary Streets:','Picture Date (mm/year)']
         df = pd.read_csv(annotation_path)
         df.columns = df.columns.str.strip()
         new_rows = []
