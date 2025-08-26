@@ -25,7 +25,7 @@ class AutomatedPromptTuner:
         abstracts = '\n\n '.join(abstracts)
         question = f"""
         You are an expert in the following fields and the author of the paper abstracts provided here: {abstracts}.\n\n
-        Based on the expertise demonstrated, generate a general professional role description of yourself in one to two sentences, starting with "You are" and written in the second person.\n
+        Based on the expertise demonstrated, generate a general professional role description of yourself in one sentence, starting with "You are" and written in the second person.\n
         This will be used as a prompt introduction.
         """
         decoded = self.vlm_processor.run(self.vlm_processor.prepare_messages(question), max_new_tokens=75)
@@ -49,12 +49,9 @@ class AutomatedPromptTuner:
 
     def task_type_to_prompt(self,task_type_code):
         if task_type_code == '0':
-            task_prompt = '''Assess the overall scene condition/quality from the provided inputs. 
-            Focus on holistic visual cues rather than counting specific objects.'''
+            task_prompt = '''Focus on holistic visual cues rather than counting specific objects.'''
         else:
-            task_prompt = '''Detect the specified object(s) strictly from visible evidence.
-                Report only presence/absence or counts as required.
-                Do not rate overall condition or add qualitative judgments.'''
+            task_prompt = '''Detect the specified object(s) strictly from visible evidence. Report only presence/absence or counts as required.'''
         return task_prompt
 
     def identify_task_type(self):
@@ -99,38 +96,21 @@ class AutomatedPromptTuner:
             self.data_config.agent_logger.info(f"I'm looking over the question-answer pairs for measure {key}. I'm refining the codebook prompt...")
             qa_pair = f"{{{value}}}"
             while True:
-                question = f"""
-                {qa_pair}\n\n
+                question = f"""Instruction: Rewrite the question as a clear, self-contained sentence, prefixed with "Question:". Then, rewrite each answer option as a full sentence explaining the meaning, starting with its number. Keep all numbers and meaning intact. Output plain text only, one sentence per line.
 
-                Review the question and answer options above. Guide a vision-language model to assess environmental features in street view images using only visual input.\n
-
-                First, write one sentence to complete the system prompt.\n
-
-                Then, write 2–3 clear sentences for the user prompt using the EXACT SAME numeric options.\n\n
-
-                Please answer the following using only two lines:\n
-                system_prompt: <your system prompt text here>\n
-                user_prompt: <your user prompt text here>
-
-                Do NOT include any JSON, brackets, or code formatting. Just output exactly these two lines.
-                """
+                Question: {codebook_dict[key]['question']} Answer options: {codebook_dict[key]['answer_options']}"""
 
                 decoded = self.vlm_processor.run(self.vlm_processor.prepare_messages(question), max_new_tokens=2000)
                 response = decoded.split('assistant')[-1].strip()
+
                 try:
                     response_dict = {}
-                    for line in response.strip().splitlines():
-                        line = line.strip()
-                        if not line or ':' not in line:
-                            continue
-                        k, v = line.split(":", 1)
-                        response_dict[k.strip()] = v.strip()
-
                     output_dict[key] = response_dict
                     if self.role_prompt is not None:
-                        output_dict[key]['system_prompt'] = self.role_prompt + output_dict[key]['system_prompt']
+                        output_dict[key]['system_prompt'] = self.role_prompt
+
                     task_prompt = self.task_type_to_prompt(task_types_dict[key])
-                    output_dict[key]['user_prompt'] = task_prompt + output_dict[key]['user_prompt'] + " DO NOT PROVIDE ANY OTHER OUTPUT TEXT OR EXPLANATION."
+                    output_dict[key]['user_prompt'] = task_prompt + " " + response.strip() + " DO NOT PROVIDE ANY OTHER OUTPUT TEXT OR EXPLANATION."
                     break
                 except Exception as e:
                     print(e)
