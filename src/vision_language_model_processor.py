@@ -4,7 +4,7 @@ import pandas as pd
 
 from transformers import AutoProcessor, AutoModelForImageTextToText, BitsAndBytesConfig
 import torch
-
+import random
 
 class VLMProcessor:
     def __init__(self, data_config, device, dtype=torch.bfloat16):
@@ -12,18 +12,20 @@ class VLMProcessor:
         self.data_config = data_config
         self.model_name = self.data_config.model_name
         self.dtype = dtype
+        f_protocol = open(self.data_config.protocol_path,'r')
+        self.protocol_raw_dict = json.load(f_protocol)
 
         if 'hf' in self.model_name:
             self.model = AutoModelForImageTextToText.from_pretrained(self.model_name, device_map=self.device, torch_dtype=self.dtype)
             self.processor = AutoProcessor.from_pretrained(self.data_config.model_name)
 
-    def prepare_messages(self, text, image_path=None, image_url=None):
+    def prepare_messages(self, text, image_path_list=None, image_url=None):
         content = [{"type": "text", "text": text}]
-        if image_path:
-            content.insert(0, {"type": "image", "image": self._load_image_tensor(image_path)})
+        if image_path_list:
+            for img_path in image_path_list:
+                content.insert(0, {"type": "image", "image": self._load_image_tensor(img_path)})
         elif image_url:
             content.insert(0, {"type": "image", "url": image_url})
-
         return [{"role": "user", "content": content}]
 
     def _load_image_tensor(self, path):
@@ -68,14 +70,14 @@ class VLMProcessor:
         if match:
             return match.group()
         return None
-
-    def _run_for_score(self, prompt, image_path, valid_scores, max_retries=5):
+        
+    def _run_for_score(self, prompt, image_path_list, valid_scores, max_retries=5):
         import ast
         attempts = 0
-        self.data_config.agent_logger.info(f"I got the image from {image_path}. I'm starting annotation now...")
+        self.data_config.agent_logger.info(f"I got the image from {image_path_list[-1]}. I'm starting annotation now...")
         while attempts < max_retries:
             try:            
-                decoded_str = self.run(prompt, image_path=image_path, max_new_tokens=1024).strip()
+                decoded_str = self.run(prompt, image_path=image_path_list, max_new_tokens=1024).strip()
                 decoded_output = self.extract_dict_from_response(decoded_str)
                 decoded_output = ast.literal_eval(decoded_output)
                 if not isinstance(decoded_output, dict):
@@ -157,12 +159,20 @@ class VLMProcessor:
         }
 
         target_codes = list(codebook.keys())
+
         for block_id in streetblock_ids:
             block_path = os.path.join(image_dir, block_id)
             for direction in os.listdir(block_path):
                 dir_path = os.path.join(block_path, direction)
                 image_score_dict = {}
                 for target_code in target_codes:
+                    target_icl_answer = []
+                    icl_img_list = []  
+                    if target_code in self.protocol_raw_dict.keys():
+                        icl_dict = self.protocol_raw_dict[target_code]
+                        for each_answer in icl_dict.keys():
+                            target_icl_answer.append(each_answer)
+                            icl_img_list.append(random.choice(icl_dict[each_answer]))
                     self.data_config.agent_logger.info(f"Jumping into measure {target_code}...\n")
                     valid_scores = class_dict[target_code]
                     format_prompt = f"""
@@ -175,11 +185,21 @@ class VLMProcessor:
                     score_list = []
                     reason_list = []
                     for fname in os.listdir(dir_path):
+                        entire_img_list = []
                         if fname.endswith(".json"):
                             continue
                         img_path = os.path.join(dir_path, fname)
-                        full_prompt = f"{role_prompt}\n{codebook[target_code]}\n{format_prompt}"
-                        score, reason = self._run_for_score(full_prompt, img_path, valid_scores)
+                        entire_img_list += icl_img_list
+                        entire_img_list.append(img_path)
+                        if len(target_icl_answer) !=0 :
+                            icl_prompt = "\n".join(
+                                    f"Example answer from referenced image #{i+1}: {ans}"
+                                    for i, ans in enumerate(target_icl_answer)
+                                )
+                            full_prompt = f"{role_prompt}\n{codebook[target_code]}\n{icl_prompt}\n{format_prompt}"
+                        else:
+                            full_prompt = f"{role_prompt}\n{codebook[target_code]}\n{format_prompt}"
+                        score, reason = self._run_for_score(full_prompt, entire_img_list, valid_scores)
                         
                         score_list.append(score)
                         reason_list.append({fname:reason})

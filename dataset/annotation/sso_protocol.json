@@ -1,7 +1,7 @@
 {
   "Disorder 3": {
-    "1": ["", ""],
-    "0": ["", ""]
+    "1": ["./dataset/annotation/protocol_img/28524_S_2.jpg","./dataset/annotation/protocol_img/18068_W_2.jpg"],
+    "0": ["./dataset/annotation/protocol_img/17491_E_4.jpg","./dataset/annotation/protocol_img/16544_E_17.jpg"]
   },
   "Decay 1": {
     "1": ["./dataset/annotation/protocol_img/decay1_good1.png", "./dataset/annotation/protocol_img/decay1_good2.png"],

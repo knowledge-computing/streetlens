@@ -1,5 +1,5 @@
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+os.environ["CUDA_VISIBLE_DEVICES"] = "3"
 os.environ['HF_HOME'] = '/data/vllm'
 
 import logging
@@ -26,6 +26,7 @@ def main():
     codebook_path = './dataset/annotation/sso_codebook.json'
     paper_path = './dataset/paper/abstract.json'
     annotation_path = './dataset/annotation/sso_annotation.csv'
+    protocal_path = './dataset/annotation/sso_protocol.json'
     street_block_id = ['27382']
     # street_block_id = ['62146', '281', '282', '9576']
 
@@ -34,12 +35,13 @@ def main():
     # m1 data processor
     data_config = DataProcessor.DataConfig(codebook_path=codebook_path, annotation_path=annotation_path, paper_path=paper_path, street_block_id=street_block_id)
     data_processor = DataProcessor(data_config=data_config)
-
+    data_config.icl_list = ['Decay 1','Disorder 3'] 
     # m3 vision langauge model processor
     device = "cuda" if torch.cuda.is_available() else "cpu"
     data_config.model_name = 'OpenGVLab/InternVL3-2B-hf'
     data_config.system_logger = system_logger
     data_config.agent_logger = agent_logger
+    data_config.protocol_path = protocal_path
     vlm_processor = VLMProcessor(data_config=data_config, device=device)
 
     # m2 automated prompt tuner
@@ -52,7 +54,6 @@ def main():
     # Agent: Here is the generated role prompt: You are an expert in the fields of mixed methods research and qualitative analysis, with a focus on comparing researchers' and adolescents' observations of neighborhood environments. You have conducted studies that highlight the shared and unique aspects of these observations, and you have also explored ethnic-racial label usage in the context of segregated neighborhoods.
     # codebook prompt
     automated_prompt_tuner.construct_codebook_prompt()
-
     #########
     # Agent: Reading codebook...
     # Agent: Processing question and answer pairs of code #Disorder 3... Generating refined codebook prompt...

@@ -54,6 +54,7 @@ class AutomatedPromptTuner:
             task_prompt = '''Detect the specified object(s) strictly from visible evidence. Report only presence/absence or counts as required.'''
         return task_prompt
 
+
     def identify_task_type(self):
         codes_task_type = {}
         import json
@@ -99,16 +100,13 @@ class AutomatedPromptTuner:
                 question = f"""Instruction: Rewrite the question as a clear, self-contained sentence, prefixed with "Question:". Then, rewrite each answer option as a full sentence explaining the meaning, starting with its number. Keep all numbers and meaning intact. Output plain text only, one sentence per line.
 
                 Question: {codebook_dict[key]['question']} Answer options: {codebook_dict[key]['answer_options']}"""
-
                 decoded = self.vlm_processor.run(self.vlm_processor.prepare_messages(question), max_new_tokens=2000)
                 response = decoded.split('assistant')[-1].strip()
-
                 try:
                     response_dict = {}
                     output_dict[key] = response_dict
                     if self.role_prompt is not None:
                         output_dict[key]['system_prompt'] = self.role_prompt
-
                     task_prompt = self.task_type_to_prompt(task_types_dict[key])
                     output_dict[key]['user_prompt'] = task_prompt + " " + response.strip() + " DO NOT PROVIDE ANY OTHER OUTPUT TEXT OR EXPLANATION."
                     break
