@@ -52,9 +52,6 @@ def main():
     # Agent: Here is the generated role prompt: You are an expert in the fields of mixed methods research and qualitative analysis, with a focus on comparing researchers' and adolescents' observations of neighborhood environments. You have conducted studies that highlight the shared and unique aspects of these observations, and you have also explored ethnic-racial label usage in the context of segregated neighborhoods.
     # codebook prompt
     automated_prompt_tuner.construct_codebook_prompt()
-    
-    import pdb
-    pdb.set_trace()
 
     #########
     # Agent: Reading codebook...
