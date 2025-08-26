@@ -1,0 +1,11 @@
+{
+  "Disorder 3": {
+    "1": ["", ""],
+    "0": ["", ""]
+  },
+  "Decay 1": {
+    "1": ["./dataset/annotation/protocol_img/decay1_good1.png", "./dataset/annotation/protocol_img/decay1_good2.png"],
+    "2": ["./dataset/annotation/protocol_img/decay1_fair1.png", "./dataset/annotation/protocol_img/decay1_fair2.png"],
+    "3": ["./dataset/annotation/protocol_img/decay1_poor.png"]
+  }
+}
