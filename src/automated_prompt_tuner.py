@@ -1,7 +1,4 @@
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
-os.environ['HF_HOME'] = '/data/vllm'
-
 import json
 
 import torch
@@ -49,7 +46,17 @@ class AutomatedPromptTuner:
         if not matches:
             matches = re.findall(r'(?<!\d)([01])(?!\d)', text_raw)
         return str(int(matches[-1]))
-        
+
+    def task_type_to_prompt(self,task_type_code):
+        if task_type_code == '0':
+            task_prompt = '''Assess the overall scene condition/quality from the provided inputs. 
+            Focus on holistic visual cues rather than counting specific objects.'''
+        else:
+            task_prompt = '''Detect the specified object(s) strictly from visible evidence.
+                Report only presence/absence or counts as required.
+                Do not rate overall condition or add qualitative judgments.'''
+        return task_prompt
+
     def identify_task_type(self):
         codes_task_type = {}
         import json
@@ -77,6 +84,8 @@ class AutomatedPromptTuner:
         return self.task_types_dict 
 
     def construct_codebook_prompt(self):
+        self.identify_task_type()
+        task_types_dict = self.task_types_dict
         if not self.data_config.codebook_path:
             print('No codebook input to construct codebook prompt')
             return
@@ -120,7 +129,8 @@ class AutomatedPromptTuner:
                     output_dict[key] = response_dict
                     if self.role_prompt is not None:
                         output_dict[key]['system_prompt'] = self.role_prompt + output_dict[key]['system_prompt']
-                    output_dict[key]['user_prompt'] = output_dict[key]['user_prompt'] + " DO NOT PROVIDE ANY OTHER OUTPUT TEXT OR EXPLANATION."
+                    task_prompt = self.task_type_to_prompt(task_types_dict[key])
+                    output_dict[key]['user_prompt'] = task_prompt + output_dict[key]['user_prompt'] + " DO NOT PROVIDE ANY OTHER OUTPUT TEXT OR EXPLANATION."
                     break
                 except Exception as e:
                     print(e)

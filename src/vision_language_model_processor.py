@@ -1,7 +1,4 @@
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
-os.environ['HF_HOME'] = '/data/vllm'
-
 import json
 import pandas as pd
 
@@ -160,26 +157,13 @@ class VLMProcessor:
         }
 
         target_codes = list(codebook.keys())
-        target_task_types = self.data_config.task_types_dict
-        # target_task_types = self.get_task_type(target_codes)
         for block_id in streetblock_ids:
             block_path = os.path.join(image_dir, block_id)
             for direction in os.listdir(block_path):
                 dir_path = os.path.join(block_path, direction)
                 image_score_dict = {}
-
                 for target_code in target_codes:
                     self.data_config.agent_logger.info(f"Jumping into measure {target_code}...\n")
-                    if target_task_types[target_code] == '0':
-                        task_prompt = '''Assess the overall scene condition/quality from the provided inputs. 
-                        Focus on holistic visual cues rather than counting specific objects   
-                        '''
-                    else:
-                        task_prompt = '''
-                        Detect the specified object(s) strictly from visible evidence. 
-                        Report only presence/absence or counts as required.
-                        Do not rate overall condition or add qualitative judgments.
-                        '''
                     valid_scores = class_dict[target_code]
                     format_prompt = f"""
                                     Please provide a single numerical value within the range {valid_scores}, along with a clear and concise explanation for your choice.\n\n
@@ -194,7 +178,7 @@ class VLMProcessor:
                         if fname.endswith(".json"):
                             continue
                         img_path = os.path.join(dir_path, fname)
-                        full_prompt = f"{role_prompt}\n{task_prompt}\n{codebook[target_code]}\n{format_prompt}"
+                        full_prompt = f"{role_prompt}\n{codebook[target_code]}\n{format_prompt}"
                         score, reason = self._run_for_score(full_prompt, img_path, valid_scores)
                         
                         score_list.append(score)

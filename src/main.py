@@ -26,7 +26,7 @@ def main():
     codebook_path = './dataset/annotation/sso_codebook.json'
     paper_path = './dataset/paper/abstract.json'
     annotation_path = './dataset/annotation/sso_annotation.csv'
-    street_block_id = ['281']
+    street_block_id = ['27382']
     # street_block_id = ['62146', '281', '282', '9576']
 
     agent_annotation_path = './dataset/annotation/agent_annotation.csv'
@@ -50,7 +50,6 @@ def main():
     ######### 
     # Agent: Received 2 abstract(s)... Generating domain-specific role prompt...
     # Agent: Here is the generated role prompt: You are an expert in the fields of mixed methods research and qualitative analysis, with a focus on comparing researchers' and adolescents' observations of neighborhood environments. You have conducted studies that highlight the shared and unique aspects of these observations, and you have also explored ethnic-racial label usage in the context of segregated neighborhoods.
-    automated_prompt_tuner.identify_task_type()
     # codebook prompt
     automated_prompt_tuner.construct_codebook_prompt()
     #########
@@ -64,7 +63,6 @@ def main():
     # vlm
     data_config.image_dir = './dataset/img/'
     data_config.role_prompt = automated_prompt_tuner.role_prompt
-    data_config.task_types_dict = automated_prompt_tuner.task_types_dict
     data_config.codebook_prompt_dict = automated_prompt_tuner.codebook_prompt_dict
     data_config.agent_annotation_path = agent_annotation_path
     

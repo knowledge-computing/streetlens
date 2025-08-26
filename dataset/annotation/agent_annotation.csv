@@ -1,2 +1,2 @@
-Street Block ID,Direction of Target Block Face,Block Face ID:,Census Tract ID:,Fully Matched,Street Block Faces on:,Boundary Streets:,Picture Date (mm/year),Disorder 3,Decay 1,Decay 2,SS4,SS5
-281,W,2395,202.01,1,N Humboldt Ave,69th Ave N/ 67th Ave N,Aug-21,0,3,3,1,0
+Street Block ID,Direction of Target Block Face,Disorder 3,Decay 1,Decay 2,SS4,SS5
+27382,N,0,3,2,1,0
