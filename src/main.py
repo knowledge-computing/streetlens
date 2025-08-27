@@ -26,22 +26,22 @@ def main():
     codebook_path = './dataset/annotation/sso_codebook.json'
     paper_path = './dataset/paper/abstract.json'
     annotation_path = './dataset/annotation/sso_annotation.csv'
-    protocal_path = './dataset/annotation/sso_protocol.json'
+    protocol_path = './dataset/annotation/sso_protocol.json'
     street_block_id = ['19955']
     # street_block_id = ['62146', '281', '282', '9576']
 
     agent_annotation_path = './dataset/annotation/agent_annotation.csv'
 
     # m1 data processor
-    data_config = DataProcessor.DataConfig(codebook_path=codebook_path, annotation_path=annotation_path, paper_path=paper_path, street_block_id=street_block_id)
+    data_config = DataProcessor.DataConfig(codebook_path=codebook_path, annotation_path=annotation_path, paper_path=paper_path, street_block_id=street_block_id, protocol_path=protocol_path)
     data_processor = DataProcessor(data_config=data_config)
     data_config.icl_list = ['Decay 1','Disorder 3'] 
+
     # m3 vision langauge model processor
     device = "cuda" if torch.cuda.is_available() else "cpu"
     data_config.model_name = 'OpenGVLab/InternVL3-2B-hf'
     data_config.system_logger = system_logger
     data_config.agent_logger = agent_logger
-    data_config.protocol_path = protocal_path
     vlm_processor = VLMProcessor(data_config=data_config, device=device)
 
     # m2 automated prompt tuner

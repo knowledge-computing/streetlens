@@ -33,6 +33,7 @@ def create_logger(name):
 codebook_path = './dataset/annotation/sso_codebook.json'
 paper_path = './dataset/paper/abstract.json'
 annotation_path = './dataset/annotation/sso_annotation.csv'
+protocol_path = './dataset/annotation/sso_protocol.json'
 agent_annotation_path = './dataset/annotation/agent_annotation.csv'
 street_block_id = ['281']
 
@@ -42,7 +43,8 @@ data_config = DataProcessor.DataConfig(
     codebook_path=codebook_path,
     annotation_path=annotation_path,
     paper_path=paper_path,
-    street_block_id=street_block_id
+    street_block_id=street_block_id,
+    protocol_path=protocol_path, 
 )
 data_config.model_name = 'OpenGVLab/InternVL3-2B-hf'
 
@@ -81,7 +83,7 @@ def run_vlm_processor():
     data_config.task_types_dict = automated_prompt_tuner.task_types_dict
     data_config.codebook_prompt_dict = automated_prompt_tuner.codebook_prompt_dict
     data_config.agent_annotation_path = agent_annotation_path
-    data_config.image_dir = './dataset/img/'
+    data_config.image_dir = './dataset/img/filtered/'
 
     vlm_processor.generate_annotation()
 
