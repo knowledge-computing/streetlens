@@ -63,7 +63,7 @@ def main():
     # Agent: Processing question and answer pairs of code #SS5... Generating refined codebook prompt...
 
     # vlm
-    data_config.image_dir = './dataset/img/'
+    data_config.image_dir = './dataset/img/filtered/'
     data_config.role_prompt = automated_prompt_tuner.role_prompt
     data_config.codebook_prompt_dict = automated_prompt_tuner.codebook_prompt_dict
     data_config.agent_annotation_path = agent_annotation_path

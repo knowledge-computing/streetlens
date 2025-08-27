@@ -1,4 +1,4 @@
 dataset/img
 __pycache__/
+*.pyc
 dataset/annotation/protocol_img
-dataset/annotation/sso_protocol_empty.json
