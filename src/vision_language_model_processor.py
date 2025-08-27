@@ -203,7 +203,6 @@ class VLMProcessor:
                         
                         score_list.append(score)
                         reason_list.append({fname:reason})
-
                     final_score = self._aggregate_scores(score_list, valid_scores)
                     image_score_dict[target_code] = [final_score,reason_list]
 

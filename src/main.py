@@ -27,7 +27,7 @@ def main():
     paper_path = './dataset/paper/abstract.json'
     annotation_path = './dataset/annotation/sso_annotation.csv'
     protocal_path = './dataset/annotation/sso_protocol.json'
-    street_block_id = ['27382']
+    street_block_id = ['19955']
     # street_block_id = ['62146', '281', '282', '9576']
 
     agent_annotation_path = './dataset/annotation/agent_annotation.csv'

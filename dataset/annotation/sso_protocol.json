@@ -1,6 +1,6 @@
 {
   "Disorder 3": {
-    "1": ["./dataset/annotation/protocol_img/28524_S_2.jpg","./dataset/annotation/protocol_img/18068_W_2.jpg"],
+    "1": ["./dataset/annotation/protocol_img/16804_E_5.jpg"],
     "0": ["./dataset/annotation/protocol_img/17491_E_4.jpg","./dataset/annotation/protocol_img/16544_E_17.jpg"]
   },
   "Decay 1": {
