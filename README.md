@@ -10,14 +10,14 @@ StreetLens is a human-centered, researcher-configurable workflow for scalable ne
 - **Scalable image retrieval and annotation:** Automatically retrieves relevant street view imagery (SVI) and generates semantic annotations, ranging from objective features (e.g., number of cars) to subjective perceptions (e.g., sense of disorder).  
 - **Flexible integration of expertise and data:** Allows researchers to define the VLM’s role through domain-informed prompting and incorporate prior survey data for robust assessments across diverse contexts.
 
----
+
 
 ## 🔗 Links
 
 - **Demo:** [https://knowledge-computing.github.io/projects/streetlens](https://knowledge-computing.github.io/projects/streetlens)
 - **arXiv Paper:** [https://arxiv.org/abs/2506.14670](https://arxiv.org/abs/2506.14670)  
 - StreetLens was accepted to the **GEOHCC Workshop at ACM SIGSPATIAL 2025**. Proceedings link will be updated once available.  
----
+
 
 ## 🖼️ System Architecture and Examples
 
@@ -26,7 +26,7 @@ Below is an overview of the StreetLens workflow along with input examples from a
 ![StreetLens System Architecture and Input Examples](./figures/system_architecture_examples.png)  
 *Figure: Input examples from a case study and system architecture of StreetLens showing the flow of VLM-based neighborhood assessment.*
 
----
+
 
 ## 📝 Colab Notebooks
 
